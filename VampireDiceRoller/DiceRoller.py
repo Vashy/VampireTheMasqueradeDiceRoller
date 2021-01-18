@@ -71,17 +71,17 @@ class RollCount:
         return result
 
 
-def to_successes(critical_successes: int) -> int:
+def _to_successes(critical_successes: int) -> int:
     single_successes = critical_successes % 2
     return (critical_successes - single_successes) * 2 + single_successes
 
 
 class RollResult:
     def __init__(self, roll_count: RollCount):
-        self.successes = roll_count.successes + \
-                         to_successes(roll_count.critical_successes) + \
-                         to_successes(roll_count.messy_criticals)
-        self.is_messy_critical = roll_count.messy_criticals > 0
+        self.successes = roll_count.successes \
+                         + _to_successes(roll_count.critical_successes + roll_count.messy_criticals)
+        self.is_messy_critical = roll_count.messy_criticals >= 1
+        self.is_critical = roll_count.critical_successes + roll_count.messy_criticals >= 2
 
 
 def roll(normal_dices: int, hunger_dices: int = 0, randomize: Randomize = RollCount.calculate_rolls) -> RollCount:

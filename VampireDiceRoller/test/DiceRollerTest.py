@@ -33,15 +33,29 @@ class MyTestCase(unittest.TestCase):
     def test_roll_result_successes_and_criticals(self):
         result = RollResult(roll(4, 1, always_critical_fake_randomize))
         self.assertEqual(9, result.successes)
-        self.assertEqual(True, result.is_messy_critical)
+        self.assertTrue(result.is_messy_critical)
+        self.assertTrue(result.is_critical)
         result = RollResult(roll(8, 2, always_critical_fake_randomize))
         self.assertEqual(20, result.successes)
-        self.assertEqual(True, result.is_messy_critical)
+        self.assertTrue(result.is_messy_critical)
+        self.assertTrue(result.is_critical)
 
     def test_roll_result_failures_and_successes(self):
         result = RollResult(roll(5, 4, AscendingFakeRandomize().randomize))
         self.assertEqual(4, result.successes)
-        self.assertEqual(False, result.is_messy_critical)
+        self.assertFalse(result.is_messy_critical)
+        self.assertFalse(result.is_critical)
+
+    def test_roll_result_is_critical(self):
+        result = RollResult(roll(2, 0, always_critical_fake_randomize))
+        self.assertTrue(result.is_critical)
+        self.assertFalse(result.is_messy_critical)
+        result = RollResult(roll(1, 1, always_critical_fake_randomize))
+        self.assertTrue(result.is_critical)
+        self.assertTrue(result.is_messy_critical)
+        result = RollResult(roll(1, 0, always_critical_fake_randomize))
+        self.assertFalse(result.is_critical)
+        self.assertFalse(result.is_messy_critical)
 
 
 def always_success_fake_randomize(ignored1, ignored2) -> int:
