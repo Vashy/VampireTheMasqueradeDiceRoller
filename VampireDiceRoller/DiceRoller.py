@@ -74,6 +74,6 @@ def roll(normal_dices: int, hunger_dices: int = 0, randomize: Randomize = calcul
     critical_successes = count_critical_successes(normal_dices_results)
     messy_criticals = count_critical_successes(hunger_dices_results)
     bestial_failures = count_bestial_failures(hunger_dices_results)
-    failures = (normal_dices + hunger_dices) - (successes + critical_successes + messy_criticals)
+    failures = (normal_dices + hunger_dices) - (successes + critical_successes + messy_criticals + bestial_failures)
 
     return RollResult(successes, failures, critical_successes, messy_criticals, bestial_failures)

@@ -26,7 +26,7 @@ class MyTestCase(unittest.TestCase):
         randomize = AscendingRandomize()
         result = roll(10, 10, randomize.ascending_randomize)
         self.assertEqual(result.successes, 4 + 4)
-        self.assertEqual(result.failures, 5 + 5)
+        self.assertEqual(result.failures, 5 + 4)
         self.assertEqual(result.critical_successes, 1)
         self.assertEqual(result.messy_criticals, 1)
         self.assertEqual(result.bestial_failures, 1)
