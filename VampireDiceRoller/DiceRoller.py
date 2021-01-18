@@ -4,7 +4,6 @@ from typing import Callable, Final, List
 
 Randomize: Final = Callable[[int, int], int]
 
-
 def calculate_rolls(normal_dices: int, hunger_dices: int, randomize: Randomize = randint) -> (int, int):
     normal_dices_results = []
     for _ in range(normal_dices):
@@ -16,34 +15,19 @@ def calculate_rolls(normal_dices: int, hunger_dices: int, randomize: Randomize =
 
 
 class RollResult:
-    def __init__(self, successes, failures, critical_successes, bestial_criticals):
-        self._successes = successes
-        self._failures = failures
-        self._critical_successes = critical_successes
-        self._bestial_criticals = bestial_criticals
-
-    @property
-    def successes(self):
-        return self._successes
-
-    @property
-    def failures(self):
-        return self._failures
-
-    @property
-    def critical_successes(self):
-        return self._critical_successes
-
-    @property
-    def bestial_criticals(self):
-        return self._bestial_criticals
+    def __init__(self, successes: int, failures: int, critical_successes: int, messy_criticals: int,
+                 bestial_failures: int):
+        self.successes = successes
+        self.failures = failures
+        self.critical_successes = critical_successes
+        self.messy_criticals = messy_criticals
+        self.bestial_failures = bestial_failures
 
     class ResultType(Enum):
         SUCCESS = 1
         CRITICAL_SUCCESS = 2
         FAILURE = 3
-        BESTIAL_FAILURE = 4
-        BESTIAL_CRITICAL = 5
+        CRITICAL_FAILURE = 4
 
 
 def map_dices(numbers: List[int]) -> List[RollResult.ResultType]:
@@ -51,8 +35,10 @@ def map_dices(numbers: List[int]) -> List[RollResult.ResultType]:
     for n in numbers:
         if n == 10:
             results.append(RollResult.ResultType.CRITICAL_SUCCESS)
-        elif n > 6:
+        elif n >= 6:
             results.append(RollResult.ResultType.SUCCESS)
+        elif n == 1:
+            results.append(RollResult.ResultType.CRITICAL_FAILURE)
         else:
             results.append(RollResult.ResultType.FAILURE)
 
@@ -60,18 +46,34 @@ def map_dices(numbers: List[int]) -> List[RollResult.ResultType]:
 
 
 def count_successes(roll_results: List[RollResult.ResultType]) -> int:
+    return count(RollResult.ResultType.SUCCESS, roll_results)
+
+
+def count_critical_successes(roll_results: List[RollResult.ResultType]) -> int:
+    return count(RollResult.ResultType.CRITICAL_SUCCESS, roll_results)
+
+
+def count(result_type: RollResult.ResultType, roll_results: List[RollResult.ResultType]) -> int:
     result = 0
     for roll_result in roll_results:
-        if roll_result == RollResult.ResultType.SUCCESS:
+        if roll_result == result_type:
             result += 1
     return result
+
+
+def count_bestial_failures(hunger_dices_results):
+    return count(RollResult.ResultType.CRITICAL_FAILURE, hunger_dices_results)
 
 
 def roll(normal_dices: int, hunger_dices: int = 0, randomize: Randomize = calculate_rolls) -> RollResult:
     (normal_dices_results, hunger_dices_results) = calculate_rolls(normal_dices, hunger_dices, randomize)
 
     normal_dices_results = map_dices(normal_dices_results)
-    successes = count_successes(normal_dices_results)
-    # bestial_successes = count_successes(hunger_dices_results)
+    hunger_dices_results = map_dices(hunger_dices_results)
+    successes = count_successes(normal_dices_results + hunger_dices_results)
+    critical_successes = count_critical_successes(normal_dices_results)
+    messy_criticals = count_critical_successes(hunger_dices_results)
+    bestial_failures = count_bestial_failures(hunger_dices_results)
+    failures = (normal_dices + hunger_dices) - (successes + critical_successes + messy_criticals)
 
-    return RollResult(successes, normal_dices - successes, 0, 0)
+    return RollResult(successes, failures, critical_successes, messy_criticals, bestial_failures)
