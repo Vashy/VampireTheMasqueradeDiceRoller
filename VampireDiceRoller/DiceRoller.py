@@ -19,6 +19,15 @@ class RollCount:
         self.failures = (normal_dices + hunger_dices) - \
                         (self.successes + self.critical_successes + self.messy_criticals + self.bestial_failures)
 
+    def __str__(self):
+        return f"""RollCount(
+        self.successes = {self.successes},
+        self.critical_successes = {self.critical_successes},
+        self.messy_criticals = {self.messy_criticals},
+        self.bestial_failures = {self.bestial_failures},
+        self.failures = {self.failures},
+)"""
+
     class RollType(Enum):
         SUCCESS = 1
         CRITICAL_SUCCESS = 2
@@ -83,10 +92,30 @@ class RollResult:
         self.is_messy_critical = roll_count.messy_criticals >= 1
         self.is_critical = roll_count.critical_successes + roll_count.messy_criticals >= 2
 
+    def __str__(self):
+        return f"""RollResult(
+        self.successes = {self.successes},
+        self.is_messy_critical = {self.is_messy_critical},
+        self.messy_criticals = {self.is_critical},
+)"""
 
-def roll(normal_dices: int, hunger_dices: int = 0, randomize: Randomize = RollCount.calculate_rolls) -> RollCount:
+
+def roll(normal_dices: int, hunger_dices: int = 0, randomize: Randomize = randint) -> RollCount:
     return RollCount(normal_dices, hunger_dices, randomize)
 
 
 def stringify(roll_count: RollCount) -> str:
     pass
+
+
+if __name__ == '__main__':
+    def print_roll(normal_dices, hunger_dices=0):
+        print(f"Rolling {normal_dices}+{hunger_dices}:")
+        roll_count = roll(normal_dices, hunger_dices)
+        print(roll_count)
+        print(RollResult(roll_count))
+        print()
+
+    print_roll(3, 2)
+    print_roll(1)
+    print_roll(50, 51)
