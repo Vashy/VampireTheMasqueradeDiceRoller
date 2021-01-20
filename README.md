@@ -17,17 +17,25 @@ It's always recommended to activate a `Virtual Environment`:
     # or
     python -m virtualenv venv 
 
+Activate it:
+
+    # GNU/Linux
+    ./venv/bin/activate
+    
+    # Windows
+    venv/Scripts/activate
+
 ## Setup
 
 Provide a valid Discord bot token via the following environment variable: `VTM_BOT_TOKEN`
 
-### Windows
-
-    setx VTM_BOT_TOKEN "YOUR TOKEN HERE"
-
 ### GNU/Linux or Mac OS
 
     export VTM_BOT_TOKEN="YOUR TOKEN HERE"
+
+### Windows
+
+    setx VTM_BOT_TOKEN "YOUR TOKEN HERE"
 
 ## Launch bot
 
