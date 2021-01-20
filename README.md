@@ -1,6 +1,8 @@
 # Vampire - The Masquerade Dice Roller bot for Discord
 
-## Dependencies
+## Setup
+
+### Dependencies
 
 * Python 3.8+
 * pip
@@ -25,19 +27,29 @@ Activate it:
     # Windows
     venv/Scripts/activate
 
-## Setup
+### Token
 
 Provide a valid Discord bot token via the following environment variable: `VTM_BOT_TOKEN`
 
-### GNU/Linux or Mac OS
+#### GNU/Linux or Mac OS
 
     export VTM_BOT_TOKEN="YOUR TOKEN HERE"
 
-### Windows
+#### Windows
 
     setx VTM_BOT_TOKEN "YOUR TOKEN HERE"
 
-## Launch bot
+### Launch bot
 
     python -m VampireDiceRoller.DiscordClient
  
+ 
+ ## Usage example
+ 
+    # /r denotes the command to invoke the bot
+    # 3 denotes how many normal dices to roll
+    # 2 denotes how many hunger dices to roll
+    /r 3+2
+
+    # Without hunger dices
+    /r 5
