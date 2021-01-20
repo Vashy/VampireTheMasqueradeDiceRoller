@@ -95,19 +95,19 @@ class MyTestCase(unittest.TestCase):
         self.assertEquals("24 successes\n20 failures\nNotes: critical hit, messy critical, bestial failure", result)
 
 
-def always_success_fake_randomize(ignored1, ignored2) -> int:
+def always_success_fake_randomize(*ignored) -> int:
     return 9
 
 
-def always_critical_fake_randomize(ignored1, ignored2) -> int:
+def always_critical_fake_randomize(*ignored) -> int:
     return 10
 
 
-def no_successes_fake_randomize(ignored1, ignored2) -> int:
+def no_successes_fake_randomize(*ignored) -> int:
     return 2
 
 
-def always_one_fake_randomize(ignored1, ignored2) -> int:
+def always_one_fake_randomize(*ignored) -> int:
     return 1
 
 
@@ -115,7 +115,7 @@ class AscendingFakeRandomize:
     def __init__(self):
         self.value = 0
 
-    def randomize(self, ignored1, ignored2) -> int:
+    def randomize(self, *ignored) -> int:
         if self.value == 10:
             self.value = 0
         self.value += 1

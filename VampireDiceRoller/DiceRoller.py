@@ -98,7 +98,8 @@ class RollResult:
         return f"""RollResult(
         self.successes = {self.successes},
         self.is_messy_critical = {self.is_messy_critical},
-        self.messy_criticals = {self.is_critical},
+        self.is_critical = {self.is_critical},
+        self.is_bestial_failure = {self.is_bestial_failure},
 )"""
 
     def stringify(self):
@@ -129,6 +130,7 @@ if __name__ == '__main__':
         roll_count = roll(normal_dices, hunger_dices)
         print(roll_count)
         print()
+
 
     print_roll(3, 2)
     print_roll(1)
