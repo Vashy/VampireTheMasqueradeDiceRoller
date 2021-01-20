@@ -67,7 +67,7 @@ def _find_specials(self: RollResult) -> List[str]:
 
 if __name__ == '__main__':
     token_key = 'VTM_BOT_TOKEN'
-    token = os.getenv('%s' % token_key)
+    token = os.getenv(token_key)
     if not token:
         print(f'please provide a {token_key} environment variable')
         exit(1)
