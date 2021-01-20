@@ -89,6 +89,7 @@ class RollResult:
     def __init__(self, roll_count: RollCount):
         self.successes = roll_count.successes \
                          + _to_successes(roll_count.critical_successes + roll_count.messy_criticals)
+        self.failures = roll_count.failures
         self.is_messy_critical = roll_count.messy_criticals >= 1
         self.is_critical = roll_count.critical_successes + roll_count.messy_criticals >= 2
 
@@ -99,13 +100,12 @@ class RollResult:
         self.messy_criticals = {self.is_critical},
 )"""
 
+    def stringify(self):
+        return f"{self.successes} successes\n{self.failures} failures"
 
-def roll(normal_dices: int, hunger_dices: int = 0, randomize: Randomize = randint) -> RollCount:
-    return RollCount(normal_dices, hunger_dices, randomize)
 
-
-def stringify(roll_count: RollCount) -> str:
-    pass
+def roll(normal_dices: int, hunger_dices: int = 0, randomize: Randomize = randint) -> RollResult:
+    return RollResult(RollCount(normal_dices, hunger_dices, randomize))
 
 
 if __name__ == '__main__':
@@ -113,7 +113,6 @@ if __name__ == '__main__':
         print(f"Rolling {normal_dices}+{hunger_dices}:")
         roll_count = roll(normal_dices, hunger_dices)
         print(roll_count)
-        print(RollResult(roll_count))
         print()
 
     print_roll(3, 2)
