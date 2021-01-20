@@ -11,7 +11,7 @@ Install requirements (only `discord.py`):
 
     pip install -r requirements.txt
 
-### Virtualenv
+### Virtualenv (optional)
 
 It's always recommended to activate a `Virtual Environment`:
 
