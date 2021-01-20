@@ -102,23 +102,6 @@ class RollResult:
         self.is_bestial_failure = {self.is_bestial_failure},
 )"""
 
-    def stringify(self):
-        result = f"{self.successes} successes\n{self.failures} failures"
-        specials = self._find_specials()
-        if specials:
-            result += "\nNotes: " + ', '.join(specials)
-        return result
-
-    def _find_specials(self):
-        specials = []
-        if self.is_critical:
-            specials.append("critical hit")
-        if self.is_messy_critical:
-            specials.append("messy critical")
-        if self.is_bestial_failure:
-            specials.append("bestial failure")
-        return specials
-
 
 def roll(normal_dices: int, hunger_dices: int = 0, randomize: Randomize = randint) -> RollResult:
     return RollResult(RollCount(normal_dices, hunger_dices, randomize))

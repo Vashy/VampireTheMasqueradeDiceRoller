@@ -1,9 +1,10 @@
 import unittest
 
 from VampireDiceRoller.DiceRoller import roll, RollCount
+from VampireDiceRoller.DiscordClient import stringify
 
 
-class MyTestCase(unittest.TestCase):
+class DiceRollerTestCase(unittest.TestCase):
 
     def test_always_success_randomizer(self):
         result = RollCount(3, 5, always_success_fake_randomize)
@@ -68,31 +69,19 @@ class MyTestCase(unittest.TestCase):
 
     def test_roll_bestial_failure(self):
         result = roll(1, 1, always_one_fake_randomize)
-        self.assertEquals(0, result.successes)
-        self.assertEquals(2, result.failures)
+        self.assertEqual(0, result.successes)
+        self.assertEqual(2, result.failures)
         self.assertFalse(result.is_critical)
         self.assertFalse(result.is_messy_critical)
         self.assertTrue(result.is_bestial_failure)
 
     def test_stringify_no_notes(self):
-        result = roll(3, 5, always_success_fake_randomize).stringify()
-        self.assertEquals("8 successes\n0 failures", result)
-        result = roll(17, 4, always_success_fake_randomize).stringify()
-        self.assertEquals("21 successes\n0 failures", result)
-        result = roll(1, 0, always_critical_fake_randomize).stringify()
-        self.assertEquals("1 successes\n0 failures", result)
-
-    def test_stringify_notes_critical_hit(self):
-        result = roll(2, 0, always_critical_fake_randomize).stringify()
-        self.assertEquals("4 successes\n0 failures\nNotes: critical hit", result)
-
-    def test_stringify_notes_messy_critical_and_bestial_failure(self):
-        result = roll(0, 10, AscendingFakeRandomize().randomize).stringify()
-        self.assertEquals("5 successes\n5 failures\nNotes: messy critical, bestial failure", result)
-
-    def test_stringify_notes_all(self):
-        result = roll(20, 20, AscendingFakeRandomize().randomize).stringify()
-        self.assertEquals("24 successes\n20 failures\nNotes: critical hit, messy critical, bestial failure", result)
+        result = stringify(roll(3, 5, always_success_fake_randomize))
+        self.assertEqual("- **Successes**: 8\n- **Failures**: 0", result)
+        result = stringify(roll(17, 4, always_success_fake_randomize))
+        self.assertEqual("- **Successes**: 21\n- **Failures**: 0", result)
+        result = stringify(roll(1, 0, always_critical_fake_randomize))
+        self.assertEqual("- **Successes**: 1\n- **Failures**: 0", result)
 
 
 def always_success_fake_randomize(*ignored) -> int:
