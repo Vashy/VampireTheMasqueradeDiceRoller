@@ -17,7 +17,7 @@ class RollCount:
         self.messy_criticals = self._count_critical_successes(hunger_dices_results)
         self.bestial_failures = self._count_bestial_failures(hunger_dices_results)
         self.failures = (normal_dices + hunger_dices) - \
-                        (self.successes + self.critical_successes + self.messy_criticals + self.bestial_failures)
+                        (self.successes + self.critical_successes + self.messy_criticals)
 
     def __str__(self):
         return f"""RollCount(
@@ -92,6 +92,7 @@ class RollResult:
         self.failures = roll_count.failures
         self.is_messy_critical = roll_count.messy_criticals >= 1
         self.is_critical = roll_count.critical_successes + roll_count.messy_criticals >= 2
+        self.is_bestial_failure = roll_count.bestial_failures >= 1
 
     def __str__(self):
         return f"""RollResult(
@@ -101,7 +102,21 @@ class RollResult:
 )"""
 
     def stringify(self):
-        return f"{self.successes} successes\n{self.failures} failures"
+        result = f"{self.successes} successes\n{self.failures} failures"
+        specials = self._find_specials()
+        if specials:
+            result += "\nNotes: " + ', '.join(specials)
+        return result
+
+    def _find_specials(self):
+        specials = []
+        if self.is_critical:
+            specials.append("critical hit")
+        if self.is_messy_critical:
+            specials.append("messy critical")
+        if self.is_bestial_failure:
+            specials.append("bestial failure")
+        return specials
 
 
 def roll(normal_dices: int, hunger_dices: int = 0, randomize: Randomize = randint) -> RollResult:
