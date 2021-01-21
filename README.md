@@ -53,3 +53,7 @@ Provide a valid Discord bot token via the following environment variable: `VTM_B
 
     # Without hunger dices
     /r 5
+    
+    # Comments are allowed
+    /r 1+5 You are hungry!
+
