@@ -7,8 +7,7 @@ Randomize: Final = Callable[[int, int], int]
 
 class RollCount:
     def __init__(self, normal_dices: int, hunger_dices: int, randomize: Randomize):
-        (normal_dices_rolls, hunger_dices_rolls) = RollCount.calculate_rolls(normal_dices, hunger_dices,
-                                                                                 randomize)
+        (normal_dices_rolls, hunger_dices_rolls) = RollCount.calculate_rolls(normal_dices, hunger_dices, randomize)
 
         self.rolls = normal_dices_rolls + hunger_dices_rolls
 
@@ -36,30 +35,26 @@ class RollCount:
         FAILURE = 3
         CRITICAL_FAILURE = 4
 
+        @staticmethod
+        def from_int(n: int):
+            if n == 10:
+                return RollCount.RollType.CRITICAL_SUCCESS
+            elif n >= 6:
+                return RollCount.RollType.SUCCESS
+            elif n == 1:
+                return RollCount.RollType.CRITICAL_FAILURE
+            else:
+                return RollCount.RollType.FAILURE
+
     @staticmethod
     def calculate_rolls(normal_dices: int, hunger_dices: int, randomize: Randomize = randint) -> (int, int):
-        normal_dices_results = []
-        for _ in range(normal_dices):
-            normal_dices_results.append(randomize(1, 10))
-        hunger_dices_results = []
-        for _ in range(hunger_dices):
-            hunger_dices_results.append(randomize(1, 10))
+        normal_dices_results = [randomize(1, 10) for _ in range(normal_dices)]
+        hunger_dices_results = [randomize(1, 10) for _ in range(hunger_dices)]
         return normal_dices_results, hunger_dices_results
 
     @staticmethod
     def _map_dices(numbers: List[int]) -> List[RollType]:
-        results = []
-        for n in numbers:
-            if n == 10:
-                results.append(RollCount.RollType.CRITICAL_SUCCESS)
-            elif n >= 6:
-                results.append(RollCount.RollType.SUCCESS)
-            elif n == 1:
-                results.append(RollCount.RollType.CRITICAL_FAILURE)
-            else:
-                results.append(RollCount.RollType.FAILURE)
-
-        return results
+        return [RollCount.RollType.from_int(n) for n in numbers]
 
     @staticmethod
     def _count_successes(roll_results: List[RollType]) -> int:
@@ -75,11 +70,7 @@ class RollCount:
 
     @staticmethod
     def _count(result_type: RollType, roll_results: List[RollType]) -> int:
-        result = 0
-        for roll_result in roll_results:
-            if roll_result == result_type:
-                result += 1
-        return result
+        return len([roll_result for roll_result in roll_results if roll_result == result_type])
 
 
 def _to_successes(critical_successes: int) -> int:
