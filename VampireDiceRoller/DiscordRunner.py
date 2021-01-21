@@ -1,5 +1,6 @@
 from typing import Final, List, NoReturn
 import os
+import argparse
 
 import discord
 
@@ -7,7 +8,7 @@ from VampireDiceRoller.CommandTokenizer import tokenize
 from VampireDiceRoller.DiceRoller import roll, RollResult
 
 TOKEN_KEY: Final = 'VTM_BOT_TOKEN'
-COMMAND_PREFIX: Final = '/r'
+COMMAND_PREFIX = None
 
 client = discord.Client()
 
@@ -21,7 +22,7 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    if message.content.startswith(COMMAND_PREFIX):
+    if message.content.startswith(invoking_command_prefix()):
         log_command_entry(message)
         normal_dices, hunger_dices, comment = tokenize(without_command_prefix(message.content))
         roll_result = roll(normal_dices, hunger_dices)
@@ -29,12 +30,16 @@ async def on_message(message):
                                    f':\n\n{stringify(roll_result)}')
 
 
+def invoking_command_prefix():
+    return COMMAND_PREFIX + 'r'
+
+
 def map_to_str(rolls: List[int]) -> str:
     return ' `[' + ', '.join([str(i) for i in rolls]) + ']`'
 
 
 def without_command_prefix(content: str) -> str:
-    return content.lstrip(COMMAND_PREFIX)
+    return content.lstrip(invoking_command_prefix())
 
 
 def get(comment: str) -> str:
@@ -72,8 +77,20 @@ def get_token():
     if not token:
         print(f'please provide a {TOKEN_KEY} environment variable')
         exit(1)
+
     return token
 
 
+def parse_command_prefix_argument(log: bool = True) -> str:
+    parser = argparse.ArgumentParser(description='Customize Command Prefix.')
+    parser.add_argument('--command-prefix', nargs='?', help='Pick a custom command prefix (default: /)', default='/')
+    prefix = parser.parse_args().command_prefix
+    if log:
+        print(f'COMMAND_PREFIX: {prefix}')
+
+    return prefix
+
+
 if __name__ == '__main__':
+    COMMAND_PREFIX = parse_command_prefix_argument(log=True)
     client.run(get_token())
