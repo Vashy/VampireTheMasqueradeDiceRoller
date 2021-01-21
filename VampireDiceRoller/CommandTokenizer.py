@@ -1,9 +1,9 @@
 from typing import Optional
 
 
-def split_comment_and_dices(token: str) -> (str, str):
+def split_comment_and_dices(untokened_str: str) -> (str, str):
     comment = None
-    split = token.split(' ', 1)
+    split = untokened_str.split(' ', 1)
     if len(split) > 1:
         comment = f'{split[1]}'
     hunger_dices = int(split[0].strip())

@@ -7,16 +7,16 @@ Randomize: Final = Callable[[int, int], int]
 
 class RollCount:
     def __init__(self, normal_dices: int, hunger_dices: int, randomize: Randomize):
-        (normal_dices_rolls, hunger_dices_rolls) = RollCount.calculate_rolls(normal_dices, hunger_dices, randomize)
+        (normal_dices_rolls, hunger_dices_rolls) = calculate_rolls(normal_dices, hunger_dices, randomize)
 
         self.rolls = normal_dices_rolls + hunger_dices_rolls
 
-        normal_dices_results = self._map_dices(normal_dices_rolls)
-        hunger_dices_results = self._map_dices(hunger_dices_rolls)
-        self.successes = self._count_successes(normal_dices_results + hunger_dices_results)
-        self.critical_successes = self._count_critical_successes(normal_dices_results)
-        self.messy_criticals = self._count_critical_successes(hunger_dices_results)
-        self.bestial_failures = self._count_bestial_failures(hunger_dices_results)
+        normal_dices_results = _map_dices(normal_dices_rolls)
+        hunger_dices_results = _map_dices(hunger_dices_rolls)
+        self.successes = _count_successes(normal_dices_results + hunger_dices_results)
+        self.critical_successes = _count_critical_successes(normal_dices_results)
+        self.messy_criticals = _count_critical_successes(hunger_dices_results)
+        self.bestial_failures = _count_bestial_failures(hunger_dices_results)
         self.failures = (normal_dices + hunger_dices) - \
                         (self.successes + self.critical_successes + self.messy_criticals)
 
@@ -29,48 +29,49 @@ class RollCount:
         self.failures = {self.failures},
 )"""
 
-    class RollType(Enum):
-        SUCCESS = 1
-        CRITICAL_SUCCESS = 2
-        FAILURE = 3
-        CRITICAL_FAILURE = 4
 
-        @staticmethod
-        def from_int(n: int):
-            if n == 10:
-                return RollCount.RollType.CRITICAL_SUCCESS
-            elif n >= 6:
-                return RollCount.RollType.SUCCESS
-            elif n == 1:
-                return RollCount.RollType.CRITICAL_FAILURE
-            else:
-                return RollCount.RollType.FAILURE
+class RollResultType(Enum):
+    SUCCESS = 1
+    CRITICAL_SUCCESS = 2
+    FAILURE = 3
+    CRITICAL_FAILURE = 4
 
     @staticmethod
-    def calculate_rolls(normal_dices: int, hunger_dices: int, randomize: Randomize = randint) -> (int, int):
-        normal_dices_results = [randomize(1, 10) for _ in range(normal_dices)]
-        hunger_dices_results = [randomize(1, 10) for _ in range(hunger_dices)]
-        return normal_dices_results, hunger_dices_results
+    def from_int(n: int):
+        if n == 10:
+            return RollResultType.CRITICAL_SUCCESS
+        elif n >= 6:
+            return RollResultType.SUCCESS
+        elif n == 1:
+            return RollResultType.CRITICAL_FAILURE
+        else:
+            return RollResultType.FAILURE
 
-    @staticmethod
-    def _map_dices(numbers: List[int]) -> List[RollType]:
-        return [RollCount.RollType.from_int(n) for n in numbers]
 
-    @staticmethod
-    def _count_successes(roll_results: List[RollType]) -> int:
-        return RollCount._count(RollCount.RollType.SUCCESS, roll_results)
+def calculate_rolls(normal_dices: int, hunger_dices: int, randomize: Randomize = randint) -> (int, int):
+    normal_dices_results = [randomize(1, 10) for _ in range(normal_dices)]
+    hunger_dices_results = [randomize(1, 10) for _ in range(hunger_dices)]
+    return normal_dices_results, hunger_dices_results
 
-    @staticmethod
-    def _count_critical_successes(roll_results: List[RollType]) -> int:
-        return RollCount._count(RollCount.RollType.CRITICAL_SUCCESS, roll_results)
 
-    @staticmethod
-    def _count_bestial_failures(hunger_dices_results: List[RollType]) -> int:
-        return RollCount._count(RollCount.RollType.CRITICAL_FAILURE, hunger_dices_results)
+def _map_dices(numbers: List[int]) -> List[RollResultType]:
+    return [RollResultType.from_int(n) for n in numbers]
 
-    @staticmethod
-    def _count(result_type: RollType, roll_results: List[RollType]) -> int:
-        return len([roll_result for roll_result in roll_results if roll_result == result_type])
+
+def _count_successes(result_types: List[RollResultType]) -> int:
+    return _count(RollResultType.SUCCESS, result_types)
+
+
+def _count_critical_successes(result_types: List[RollResultType]) -> int:
+    return _count(RollResultType.CRITICAL_SUCCESS, result_types)
+
+
+def _count_bestial_failures(hunger_dices_results: List[RollResultType]) -> int:
+    return _count(RollResultType.CRITICAL_FAILURE, hunger_dices_results)
+
+
+def _count(result_type: RollResultType, roll_results: List[RollResultType]) -> int:
+    return len([roll_result for roll_result in roll_results if roll_result == result_type])
 
 
 def _to_successes(critical_successes: int) -> int:
