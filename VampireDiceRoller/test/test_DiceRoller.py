@@ -1,7 +1,7 @@
 import unittest
 
 from VampireDiceRoller.DiceRoller import roll, RollCount
-from VampireDiceRoller.DiscordClient import stringify
+from VampireDiceRoller.DiscordRunner import stringify
 
 
 class DiceRollerTestCase(unittest.TestCase):
