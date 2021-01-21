@@ -84,8 +84,9 @@ class RollResult:
         self.successes = roll_count.successes \
                          + _to_successes(roll_count.critical_successes + roll_count.messy_criticals)
         self.failures = roll_count.failures
-        self.is_messy_critical = roll_count.messy_criticals >= 1
-        self.is_critical = roll_count.critical_successes + roll_count.messy_criticals >= 2
+        self.is_messy_critical = roll_count.messy_criticals and \
+                                 roll_count.messy_criticals + roll_count.critical_successes >= 2
+        self.is_critical = not self.is_messy_critical and roll_count.critical_successes >= 2
         self.is_bestial_failure = roll_count.bestial_failures >= 1
         self.rolls = roll_count.rolls
 

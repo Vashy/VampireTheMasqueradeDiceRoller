@@ -41,14 +41,14 @@ class DiceRollerTestCase(unittest.TestCase):
         self.assertEqual(0, result.failures)
         self.assertEqual([10] * 5, result.rolls)
         self.assertTrue(result.is_messy_critical)
-        self.assertTrue(result.is_critical)
+        self.assertFalse(result.is_critical)
         self.assertFalse(result.is_bestial_failure)
         result = roll(8, 2, always_critical_fake_randomize)
         self.assertEqual(20, result.successes)
         self.assertEqual(0, result.failures)
         self.assertEqual([10] * 10, result.rolls)
         self.assertTrue(result.is_messy_critical)
-        self.assertTrue(result.is_critical)
+        self.assertFalse(result.is_critical)
         self.assertFalse(result.is_bestial_failure)
 
     def test_roll_result_failures_and_successes(self):
@@ -68,11 +68,17 @@ class DiceRollerTestCase(unittest.TestCase):
         self.assertFalse(result.is_bestial_failure)
         result = roll(1, 1, always_critical_fake_randomize)
         self.assertEqual([10, 10], result.rolls)
-        self.assertTrue(result.is_critical)
+        self.assertFalse(result.is_critical)
         self.assertTrue(result.is_messy_critical)
         self.assertFalse(result.is_bestial_failure)
         result = roll(1, 0, always_critical_fake_randomize)
         self.assertEqual([10], result.rolls)
+        self.assertFalse(result.is_critical)
+        self.assertFalse(result.is_messy_critical)
+        self.assertFalse(result.is_bestial_failure)
+        result = roll(0, 1, always_critical_fake_randomize)
+        self.assertEqual([10], result.rolls)
+        self.assertEqual(1, result.successes)
         self.assertFalse(result.is_critical)
         self.assertFalse(result.is_messy_critical)
         self.assertFalse(result.is_bestial_failure)
@@ -95,19 +101,19 @@ class DiceRollerTestCase(unittest.TestCase):
         self.assertEqual("- **Successes**: 1\n- **Failures**: 0", result)
 
 
-def always_success_fake_randomize(*ignored) -> int:
+def always_success_fake_randomize(ignored1, ignored2) -> int:
     return 9
 
 
-def always_critical_fake_randomize(*ignored) -> int:
+def always_critical_fake_randomize(ignored1, ignored2) -> int:
     return 10
 
 
-def always_fail_fake_randomize(*ignored) -> int:
+def always_fail_fake_randomize(ignored1, ignored2) -> int:
     return 2
 
 
-def always_one_fake_randomize(*ignored) -> int:
+def always_one_fake_randomize(ignored1, ignored2) -> int:
     return 1
 
 
@@ -115,7 +121,7 @@ class AscendingFakeRandomize:
     def __init__(self):
         self.value = 0
 
-    def randomize(self, *ignored) -> int:
+    def randomize(self, ignored1, ignored2) -> int:
         if self.value == 10:
             self.value = 0
         self.value += 1
