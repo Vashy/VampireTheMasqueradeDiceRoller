@@ -7,11 +7,13 @@ Randomize: Final = Callable[[int, int], int]
 
 class RollCount:
     def __init__(self, normal_dices: int, hunger_dices: int, randomize: Randomize):
-        (normal_dices_results, hunger_dices_results) = RollCount.calculate_rolls(normal_dices, hunger_dices,
+        (normal_dices_rolls, hunger_dices_rolls) = RollCount.calculate_rolls(normal_dices, hunger_dices,
                                                                                  randomize)
 
-        normal_dices_results = self._map_dices(normal_dices_results)
-        hunger_dices_results = self._map_dices(hunger_dices_results)
+        self.rolls = normal_dices_rolls + hunger_dices_rolls
+
+        normal_dices_results = self._map_dices(normal_dices_rolls)
+        hunger_dices_results = self._map_dices(hunger_dices_rolls)
         self.successes = self._count_successes(normal_dices_results + hunger_dices_results)
         self.critical_successes = self._count_critical_successes(normal_dices_results)
         self.messy_criticals = self._count_critical_successes(hunger_dices_results)
@@ -93,6 +95,7 @@ class RollResult:
         self.is_messy_critical = roll_count.messy_criticals >= 1
         self.is_critical = roll_count.critical_successes + roll_count.messy_criticals >= 2
         self.is_bestial_failure = roll_count.bestial_failures >= 1
+        self.rolls = roll_count.rolls
 
     def __str__(self) -> str:
         return f"""RollResult(

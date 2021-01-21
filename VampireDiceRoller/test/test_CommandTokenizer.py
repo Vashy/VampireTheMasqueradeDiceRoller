@@ -19,13 +19,13 @@ class CommandTokenizerTestCase(unittest.TestCase):
         (normal_dices, hunger_dices, comment) = tokenize('7+3 nice comment!')
         self.assertEqual(7, normal_dices)
         self.assertEqual(3, hunger_dices)
-        self.assertEqual('`nice comment!`', comment)
+        self.assertEqual('nice comment!', comment)
 
     def test_tokenize_with_comment_without_hunger(self):
         (normal_dices, hunger_dices, comment) = tokenize('7 another nice comment!')
         self.assertEqual(7, normal_dices)
         self.assertEqual(0, hunger_dices)
-        self.assertEqual('`another nice comment!`', comment)
+        self.assertEqual('another nice comment!', comment)
 
 
 if __name__ == '__main__':

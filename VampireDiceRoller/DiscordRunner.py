@@ -25,7 +25,12 @@ async def on_message(message):
         log_command_entry(message)
         normal_dices, hunger_dices, comment = tokenize(without_command_prefix(message.content))
         roll_result = roll(normal_dices, hunger_dices)
-        await message.channel.send(f'{message.author.mention} rolled{get(comment)}:\n\n{stringify(roll_result)}')
+        await message.channel.send(f'{message.author.mention} rolled{get(comment)}{map_to_str(roll_result.rolls)}'
+                                   f':\n\n{stringify(roll_result)}')
+
+
+def map_to_str(rolls: List[int]) -> str:
+    return ' `[' + ', '.join([str(i) for i in rolls]) + ']`'
 
 
 def without_command_prefix(content: str) -> str:
@@ -34,7 +39,7 @@ def without_command_prefix(content: str) -> str:
 
 def get(comment: str) -> str:
     if comment:
-        return f' {comment}'
+        return f" *'{comment}'*"
     else:
         return ''
 
