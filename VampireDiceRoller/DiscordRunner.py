@@ -3,6 +3,7 @@ import os
 
 import discord
 
+from VampireDiceRoller.CommandTokenizer import tokenize
 from VampireDiceRoller.DiceRoller import roll, RollResult
 
 COMMAND_PREFIX: Final = '/r'
@@ -41,40 +42,15 @@ def log_command_entry(message: str) -> NoReturn:
     print('Message from {0.author}: {0.content}'.format(message))
 
 
-def tokenize(message: str) -> (int, int, str):
-    """3+2"""
-    split = message.split('+')
-    if len(split) == 1:
-        comment, normal_dices = split_comment_and_dices(split[0].strip())
-        return normal_dices, 0, comment
-    else:
-        normal_dices = int(split[0].strip())
-        comment = None
-        if len(split) > 1:
-            comment, hunger_dices = split_comment_and_dices(split[1].strip())
-        else:
-            hunger_dices = int(split[1].strip())
-        return normal_dices, hunger_dices, comment
-
-
-def split_comment_and_dices(token: str) -> (str, str):
-    comment = None
-    split = token.split(' ', 1)
-    if len(split) > 1:
-        comment = f'`{split[1]}`'
-    hunger_dices = int(split[0].strip())
-    return comment, hunger_dices
-
-
 def stringify(roll_result: RollResult) -> str:
     result = f"- **Successes**: {roll_result.successes}\n- **Failures**: {roll_result.failures}"
-    specials = _find_specials(roll_result)
+    specials = _list_specials(roll_result)
     if specials:
         result += "\n- **Special**: " + ', '.join(specials)
     return result
 
 
-def _find_specials(self: RollResult) -> List[str]:
+def _list_specials(self: RollResult) -> List[str]:
     specials = []
     if self.is_critical:
         specials.append("*critical hit*")
