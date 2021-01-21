@@ -19,31 +19,51 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    log_message_entry(message)
     if message.content.startswith(COMMAND_PREFIX):
-        normal_dices, hunger_dices = tokenize(without_command_prefix(message.content))
+        log_command_entry(message)
+        normal_dices, hunger_dices, comment = tokenize(without_command_prefix(message.content))
         roll_result = roll(normal_dices, hunger_dices)
-        await message.channel.send(f'{message.author.mention} rolled:\n\n{roll_result.stringify()}')
+        await message.channel.send(f'{message.author.mention} rolled{get(comment)}:\n\n{stringify(roll_result)}')
 
 
 def without_command_prefix(content) -> str:
     return content.lstrip(COMMAND_PREFIX)
 
 
-def log_message_entry(message):
+def get(comment: str) -> str:
+    if comment:
+        return f' {comment}'
+    else:
+        return ''
+
+
+def log_command_entry(message):
     print('Message from {0.author}: {0.content}'.format(message))
 
 
-def tokenize(message: str) -> (int, int):
+def tokenize(message: str) -> (int, int, str):
     """3+2"""
-    split = message.split("+")
+    split = message.split('+')
+    if len(split) == 1:
+        comment, normal_dices = split_comment_and_dices(split[0].strip())
+        return normal_dices, 0, comment
+    else:
+        normal_dices = int(split[0].strip())
+        comment = None
+        if len(split) > 1:
+            comment, hunger_dices = split_comment_and_dices(split[1].strip())
+        else:
+            hunger_dices = int(split[1].strip())
+        return normal_dices, hunger_dices, comment
 
-    normal_dices = int(split[0].strip())
-    hunger_dices = 0
+
+def split_comment_and_dices(token: str) -> (str, str):
+    comment = None
+    split = token.split(' ', 1)
     if len(split) > 1:
-        hunger_dices = int(split[1].strip())
-
-    return normal_dices, hunger_dices
+        comment = f'`{split[1]}`'
+    hunger_dices = int(split[0].strip())
+    return comment, hunger_dices
 
 
 def stringify(roll_result: RollResult) -> str:
