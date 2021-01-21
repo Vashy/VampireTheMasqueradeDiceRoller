@@ -6,6 +6,7 @@ import discord
 from VampireDiceRoller.CommandTokenizer import tokenize
 from VampireDiceRoller.DiceRoller import roll, RollResult
 
+TOKEN_KEY: Final = 'VTM_BOT_TOKEN'
 COMMAND_PREFIX: Final = '/r'
 
 client = discord.Client()
@@ -61,11 +62,13 @@ def _list_specials(self: RollResult) -> List[str]:
     return specials
 
 
-if __name__ == '__main__':
-    token_key = 'VTM_BOT_TOKEN'
-    token = os.getenv(token_key)
+def get_token():
+    token = os.getenv(TOKEN_KEY)
     if not token:
-        print(f'please provide a {token_key} environment variable')
+        print(f'please provide a {TOKEN_KEY} environment variable')
         exit(1)
+    return token
 
-    client.run(token)
+
+if __name__ == '__main__':
+    client.run(get_token())
