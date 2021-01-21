@@ -1,4 +1,4 @@
-from typing import Final, List
+from typing import Final, List, NoReturn
 import os
 
 import discord
@@ -26,7 +26,7 @@ async def on_message(message):
         await message.channel.send(f'{message.author.mention} rolled{get(comment)}:\n\n{stringify(roll_result)}')
 
 
-def without_command_prefix(content) -> str:
+def without_command_prefix(content: str) -> str:
     return content.lstrip(COMMAND_PREFIX)
 
 
@@ -37,7 +37,7 @@ def get(comment: str) -> str:
         return ''
 
 
-def log_command_entry(message):
+def log_command_entry(message: str) -> NoReturn:
     print('Message from {0.author}: {0.content}'.format(message))
 
 

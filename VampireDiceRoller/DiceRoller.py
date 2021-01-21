@@ -68,7 +68,7 @@ class RollCount:
         return RollCount._count(RollCount.RollType.CRITICAL_SUCCESS, roll_results)
 
     @staticmethod
-    def _count_bestial_failures(hunger_dices_results):
+    def _count_bestial_failures(hunger_dices_results: List[RollType]) -> int:
         return RollCount._count(RollCount.RollType.CRITICAL_FAILURE, hunger_dices_results)
 
     @staticmethod
@@ -94,7 +94,7 @@ class RollResult:
         self.is_critical = roll_count.critical_successes + roll_count.messy_criticals >= 2
         self.is_bestial_failure = roll_count.bestial_failures >= 1
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"""RollResult(
         self.successes = {self.successes},
         self.is_messy_critical = {self.is_messy_critical},
