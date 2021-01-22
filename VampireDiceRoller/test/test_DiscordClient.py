@@ -1,7 +1,7 @@
 import unittest
 
 from VampireDiceRoller.DiceRoller import roll
-from VampireDiceRoller.DiscordRunner import stringify
+from VampireDiceRoller.Stringifier import stringify
 from VampireDiceRoller.test.test_DiceRoller import always_critical_fake_randomize, AscendingFakeRandomize
 
 
