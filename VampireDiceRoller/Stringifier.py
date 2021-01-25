@@ -15,12 +15,13 @@ def build_reply(comment: str,
            f'{stringify(roll_result, bold_delimiter, italic_delimiter)}'
 
 
-def stringify(roll_result: RollResult, bold_delimiter: str = '**', italic_delimiter: str = '*') -> str:
-    result = f"- {bold_delimiter}Successes{bold_delimiter}: {roll_result.successes}\n" \
-             f"- {bold_delimiter}Failures{bold_delimiter}: {roll_result.failures}"
+def stringify(roll_result: RollResult, bold_delimiter: str = '**', italic_delimiter: str = '*',
+              list_prefix: str = '-') -> str:
+    result = f"{list_prefix} {bold_delimiter}Successes{bold_delimiter}: {roll_result.successes}\n" \
+             f"{list_prefix} {bold_delimiter}Failures{bold_delimiter}: {roll_result.failures}"
     specials = [f'{italic_delimiter}{special}{italic_delimiter}' for special in _list_specials(roll_result)]
     if specials:
-        result += f'\n- {bold_delimiter}Special{bold_delimiter}: ' + \
+        result += f'\n{list_prefix} {bold_delimiter}Special{bold_delimiter}: ' + \
                   ', '.join(specials)
     return result
 

@@ -9,7 +9,7 @@ from VampireDiceRoller.Stringifier import build_reply
 import discord
 
 TOKEN_KEY: Final = 'VTM_BOT_TOKEN'
-COMMAND_PREFIX = None
+COMMAND_PREFIX = '/'
 
 client = discord.Client()
 
