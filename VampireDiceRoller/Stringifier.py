@@ -1,18 +1,20 @@
-from typing import List
+from typing import List, Optional
 
 from VampireDiceRoller.DiceRoller import RollResult
 
 
 def build_reply(comment: str,
-                user_mention: str,
+                user_mention: Optional[str],
                 roll_result: RollResult,
                 bold_delimiter: str = '**',
-                italic_delimiter: str = '*') -> str:
+                italic_delimiter: str = '*',
+                list_prefix: str = '-') -> str:
     comment = _parse(comment, italic_delimiter)
     rolls_as_str = _map_to_str(roll_result.rolls)
 
-    return f'{user_mention} rolled{comment}{rolls_as_str}:\n\n' \
-           f'{stringify(roll_result, bold_delimiter, italic_delimiter)}'
+    first_row = f'{user_mention} rolled{comment}{rolls_as_str}' if user_mention else f'Rolled{comment}{rolls_as_str}'
+    return f'{first_row}:\n\n' \
+           f'{stringify(roll_result, bold_delimiter, italic_delimiter, list_prefix)}'
 
 
 def stringify(roll_result: RollResult, bold_delimiter: str = '**', italic_delimiter: str = '*',
@@ -38,7 +40,7 @@ def _list_specials(self: RollResult) -> List[str]:
 
 
 def _map_to_str(rolls: List[int]) -> str:
-    return ' `[' + ', '.join([str(i) for i in rolls]) + ']`'
+    return ' `[' + ','.join([str(i) for i in rolls]) + ']`'
 
 
 def _parse(comment: str, comment_delimiter: str = '*') -> str:
