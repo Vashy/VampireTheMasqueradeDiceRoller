@@ -29,6 +29,10 @@ Activate it:
 
 ### Token
 
+*Informations below are outdated.*
+
+---
+
 Provide a valid Discord bot token via the following environment variable: `VTM_BOT_TOKEN`
 
 #### GNU/Linux or Mac OS
