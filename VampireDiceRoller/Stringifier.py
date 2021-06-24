@@ -2,6 +2,8 @@ from typing import List, Optional
 
 from VampireDiceRoller.DiceRoller import RollResult
 
+MAX_ROLLS = 50
+
 
 def build_reply(comment: str,
                 user_mention: Optional[str],
@@ -9,6 +11,9 @@ def build_reply(comment: str,
                 bold_delimiter: str = '**',
                 italic_delimiter: str = '*',
                 list_prefix: str = '-') -> str:
+    if _not_valid(roll_result):
+        return f'Roll limit: {MAX_ROLLS} dices'
+
     comment = _parse(comment, italic_delimiter)
     rolls_as_str = _map_to_str(roll_result.rolls)
 
@@ -17,10 +22,14 @@ def build_reply(comment: str,
            f'{stringify(roll_result, bold_delimiter, italic_delimiter, list_prefix)}'
 
 
+def _not_valid(roll_result: RollResult) -> bool:
+    return len(roll_result.rolls) > MAX_ROLLS
+
+
 def stringify(roll_result: RollResult, bold_delimiter: str = '**', italic_delimiter: str = '*',
               list_prefix: str = '-') -> str:
-    result = f"{list_prefix} {bold_delimiter}Successes{bold_delimiter}: {roll_result.successes}\n" \
-             f"{list_prefix} {bold_delimiter}Failures{bold_delimiter}: {roll_result.failures}"
+    result = f'{list_prefix} {bold_delimiter}Successes{bold_delimiter}: {roll_result.successes}\n' \
+             f'{list_prefix} {bold_delimiter}Failures{bold_delimiter}: {roll_result.failures}'
     specials = [f'{italic_delimiter}{special}{italic_delimiter}' for special in _list_specials(roll_result)]
     if specials:
         result += f'\n{list_prefix} {bold_delimiter}Special{bold_delimiter}: ' + \

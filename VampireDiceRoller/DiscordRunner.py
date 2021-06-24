@@ -9,6 +9,7 @@ from VampireDiceRoller.RunnersUtils import invoking_command_prefix, without_comm
 from VampireDiceRoller.Stringifier import build_reply
 
 client = discord.Client()
+regex = r'\d+(:?+\d+)?.*'
 
 
 @client.event

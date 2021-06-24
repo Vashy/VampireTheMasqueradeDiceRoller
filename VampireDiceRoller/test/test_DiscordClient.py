@@ -1,7 +1,7 @@
 import unittest
 
-from VampireDiceRoller.DiceRoller import roll
-from VampireDiceRoller.Stringifier import stringify
+from VampireDiceRoller.DiceRoller import roll, RollResult, RollCount
+from VampireDiceRoller.Stringifier import stringify, build_reply, MAX_ROLLS
 from VampireDiceRoller.test.test_DiceRoller import always_critical_fake_randomize, AscendingFakeRandomize
 
 
@@ -33,6 +33,18 @@ class DiscordClientTest(unittest.TestCase):
             "- **Successes**: 12\n- **Failures**: 11\n"
             "- **Special**: *critical hit*, *bestial failure*",
             result)
+
+    def test_fail_when_more_than_50_normal_dices_are_rolled(self):
+        result = build_reply('',
+                             user_mention=None,
+                             roll_result=RollResult(RollCount(51, 0, always_critical_fake_randomize)))
+        self.assertEqual(f'Roll limit: {MAX_ROLLS} dices', result)
+
+    def test_fail_when_more_than_50_hubger_dices_are_rolled(self):
+        result = build_reply('',
+                             user_mention=None,
+                             roll_result=RollResult(RollCount(0, 51, always_critical_fake_randomize)))
+        self.assertEqual(f'Roll limit: {MAX_ROLLS} dices', result)
 
 
 if __name__ == '__main__':
