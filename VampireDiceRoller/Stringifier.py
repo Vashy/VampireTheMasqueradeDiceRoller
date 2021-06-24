@@ -12,13 +12,13 @@ def build_reply(comment: str,
                 italic_delimiter: str = '*',
                 list_prefix: str = '-') -> str:
     if _not_valid(roll_result):
-        return f'Roll limit: {MAX_ROLLS} dices'
+        return f'Roll limit: {bold_delimiter}{MAX_ROLLS}{bold_delimiter} dices'
 
     comment = _parse(comment, italic_delimiter)
     rolls_as_str = _map_to_str(roll_result.rolls)
 
-    first_row = f'{user_mention} rolled{comment}{rolls_as_str}' if user_mention else f'Rolled{comment}{rolls_as_str}'
-    return f'{first_row}:\n\n' \
+    heading_row = f'{user_mention} rolled{comment}{rolls_as_str}' if user_mention else f'Rolled{comment}{rolls_as_str}'
+    return f'{heading_row}:\n\n' \
            f'{stringify(roll_result, bold_delimiter, italic_delimiter, list_prefix)}'
 
 
